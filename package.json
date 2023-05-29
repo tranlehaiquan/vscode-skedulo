@@ -12,6 +12,25 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "skedulo",
+					"title": "Skedulo",
+					"icon": "media/safari-pinned-tab.svg"
+				}
+			]
+		},
+    "views": {
+			"skedulo": [
+				{
+					"id": "nodeDependencies",
+					"name": "Node Dependencies",
+					"icon": "media/dep.svg",
+					"contextualTitle": "Package Explorer"
+				}
+			]
+    },
     "commands": [
       {
         "command": "vscode-skedulo.helloWorld",
