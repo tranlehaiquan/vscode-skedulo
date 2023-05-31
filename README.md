@@ -1,3 +1,7 @@
+# Ideas
+
+https://lucid.app/lucidspark/49be3cb1-a61e-4f71-bd1d-55dbffcd18f2/edit?viewport_loc=-835%2C-596%2C2532%2C1377%2C0_0&invitationId=inv_5891ff7f-788f-46bc-9501-ff8d22fb2c30
+
 # vscode-skedulo README
 
 This is the README for your extension "vscode-skedulo". After writing up a brief description, we recommend including the following sections.

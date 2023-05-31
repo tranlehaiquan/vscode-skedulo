@@ -12,28 +12,43 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "skedulo",
-					"title": "Skedulo",
-					"icon": "media/safari-pinned-tab.svg"
-				}
-			]
-		},
+    "viewsWelcome": [
+      {
+        "view": "skedulo-tenant",
+        "contents": "No tenant fond.\n[Login Tenant](command:nodeDependencies.addEntry)"
+      },
+      {
+        "view": "skedulo-detail",
+        "contents": "Please login.\n[Login Tenant](command:nodeDependencies.addEntry)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "skedulo",
+          "title": "Skedulo",
+          "icon": "media/safari-pinned-tab.svg"
+        }
+      ]
+    },
     "views": {
-			"skedulo": [
-				{
-					"id": "nodeDependencies",
-					"name": "Node Dependencies",
-					"icon": "media/dep.svg",
-					"contextualTitle": "Package Explorer"
-				}
-			]
+      "skedulo": [
+        {
+          "id": "skedulo-detail",
+          "name": "Tenant Detail",
+          "icon": "media/dep.svg",
+          "contextualTitle": "Tenant Detail"
+        },
+        {
+          "id": "skedulo-tenant",
+          "name": "Tenants"
+        }
+      ]
     },
     "commands": [
       {
         "command": "vscode-skedulo.helloWorld",
+        "category": "Skedulo",
         "title": "Hello World"
       }
     ]
