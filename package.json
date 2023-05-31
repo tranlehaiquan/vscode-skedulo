@@ -14,10 +14,6 @@
   "contributes": {
     "viewsWelcome": [
       {
-        "view": "skedulo-tenant",
-        "contents": "No tenant fond.\n[Login Tenant](command:vscode-skedulo.authenticateTenant)"
-      },
-      {
         "view": "skedulo-detail",
         "contents": "Please login.\n[Login Tenant](command:vscode-skedulo.authenticateTenant)"
       }
@@ -47,9 +43,9 @@
     },
     "commands": [
       {
-        "command": "vscode-skedulo.authenticateTenant",
+        "command": "skedulo.skedulo-detail:refresh",
         "category": "Skedulo",
-        "title": "Login Tenant"
+        "title": "Refresh Tenant Detail"
       }
     ]
   },

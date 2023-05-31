@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import TenantManager from "./TenantManager";
 import Auth0Utils from "./auth0-utils";
 import { Environment, SkedError } from "./types";
 
@@ -16,6 +17,11 @@ export class AuthenticateTenant {
         if (tenant) {
           try {
             await this.authenticateTenant(tenant);
+            vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
+            // show message success login
+            vscode.window.showInformationMessage(
+              "Successfully authenticated tenant: " + tenant
+            );
           } catch (error) {
             if (error instanceof SkedError) {
               vscode.window.showErrorMessage(
@@ -41,6 +47,11 @@ export class AuthenticateTenant {
       tenant,
       Environment.Production
     );
+
+    TenantManager.setCurrentTenant({
+      name: tenant,
+      accessToken,
+    });
 
     return accessToken;
   };
