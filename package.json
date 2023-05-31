@@ -15,11 +15,11 @@
     "viewsWelcome": [
       {
         "view": "skedulo-tenant",
-        "contents": "No tenant fond.\n[Login Tenant](command:vscode-skedulo.openServer)"
+        "contents": "No tenant fond.\n[Login Tenant](command:vscode-skedulo.authenticateTenant)"
       },
       {
         "view": "skedulo-detail",
-        "contents": "Please login.\n[Login Tenant](command:vscode-skedulo.openServer)"
+        "contents": "Please login.\n[Login Tenant](command:vscode-skedulo.authenticateTenant)"
       }
     ],
     "viewsContainers": {
@@ -47,14 +47,9 @@
     },
     "commands": [
       {
-        "command": "vscode-skedulo.helloWorld",
+        "command": "vscode-skedulo.authenticateTenant",
         "category": "Skedulo",
-        "title": "Hello World"
-      },
-      {
-        "command": "vscode-skedulo.openServer",
-        "category": "Skedulo",
-        "title": "Open server"
+        "title": "Login Tenant"
       }
     ]
   },

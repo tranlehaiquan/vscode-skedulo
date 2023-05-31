@@ -1,13 +1,34 @@
 import * as vscode from "vscode";
 import Auth0Utils from "./auth0-utils";
-import { Environment } from "./types";
+import { Environment, SkedError } from "./types";
 
 export class AuthenticateTenant {
   constructor(context: vscode.ExtensionContext) {
     let authenticateCommand = vscode.commands.registerCommand(
-      "vscode-skedulo.openServer",
+      "vscode-skedulo.authenticateTenant",
       async () => {
-        this.authenticateTenant("trainingcxvn");
+        // vscode open input tenant name
+        const tenant = await vscode.window.showInputBox({
+          prompt: "Enter tenant name",
+          placeHolder: "trainingcxvn",
+        });
+
+        if (tenant) {
+          try {
+            await this.authenticateTenant(tenant);
+          } catch (error) {
+            if (error instanceof SkedError) {
+              vscode.window.showErrorMessage(
+                "Error authenticating tenant: " + error.message
+              );
+              return;
+            }
+
+            vscode.window.showErrorMessage(
+              "Something went wrong authenticating tenant"
+            );
+          }
+        }
       }
     );
 

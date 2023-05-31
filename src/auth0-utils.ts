@@ -3,9 +3,16 @@ import * as express from "express";
 import * as crypto from "node:crypto";
 import * as http from "node:http";
 import * as url from "node:url";
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 // import open from "open";
-import { ApiResult, Environment, HTTPHeaders, HTTPMethod, SkedError, TeamAuthConfig } from "./types";
+import {
+  ApiResult,
+  Environment,
+  HTTPHeaders,
+  HTTPMethod,
+  SkedError,
+  TeamAuthConfig,
+} from "./types";
 import { performRequest } from "./http/httputils";
 
 const apiGateways: Record<Environment, string> = {
@@ -43,7 +50,6 @@ export const getTeamAuthConfig = async (
   }
 };
 
-
 export default class Auth0Utils {
   async performAuth0Login(
     teamName: string,
@@ -60,7 +66,6 @@ export default class Auth0Utils {
     // open(authURL);
     // open url in browser
     vscode.env.openExternal(vscode.Uri.parse(authURL));
-    console.log(authURL);
 
     const code = await this.runAuthCallbackServer();
     const token = await this.performTokenExchange(code, verifier, auth0Config);
@@ -135,6 +140,7 @@ export default class Auth0Utils {
 
     return code as string;
   }
+
   private base64URLEncode(str: Buffer): string {
     return str
       .toString("base64")

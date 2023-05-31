@@ -1,18 +1,9 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { SkeduloTreeDataProvider } from "./SkeduloTreeDataProvider";
-import { openServer } from "./httpServerSample";
+import { AuthenticateTenant } from './tenantAuthenticate';
 
 export function activate(context: vscode.ExtensionContext) {
-  // vscode-skedulo.openServer command
-  let disposableServerOpen = vscode.commands.registerCommand(
-    "vscode-skedulo.openServer",
-    async () => {
-      openServer('trainingcxvn');
-    }
-  );
-  context.subscriptions.push(disposableServerOpen);
+  new AuthenticateTenant(context);
 
   const skeduloProvider = new SkeduloTreeDataProvider();
   vscode.window.registerTreeDataProvider("skedulo-detail", skeduloProvider);
