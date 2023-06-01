@@ -12,6 +12,13 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "iconThemes": [
+      {
+        "id": "skedulo",
+        "label": "SKedulo",
+        "path": "./media/safari-pinned-tab.svg"
+      }
+    ],
     "viewsWelcome": [
       {
         "view": "skedulo-detail",
@@ -46,6 +53,11 @@
         "command": "skedulo.skedulo-detail:refresh",
         "category": "Skedulo",
         "title": "Refresh Tenant Detail"
+      },
+      {
+        "command": "skedulo.showStatus",
+        "category": "Skedulo",
+        "title": "show status"
       }
     ]
   },

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import TenantManager from "./TenantManager";
-import Auth0Utils from "./auth0-utils";
-import { Environment, SkedError } from "./types";
+import Auth0Utils from "./core/auth0-utils";
+import { Environment, SkedError } from "./core/types";
 
 export class AuthenticateTenant {
   constructor(context: vscode.ExtensionContext) {
@@ -25,7 +25,7 @@ export class AuthenticateTenant {
           } catch (error) {
             if (error instanceof SkedError) {
               vscode.window.showErrorMessage(
-                "Error authenticating tenant: " + error.message
+                "Error authenticating tenant: " + (error as any).message
               );
               return;
             }
