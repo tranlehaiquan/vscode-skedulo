@@ -99,3 +99,7 @@ export const initAuthenticate = (context: vscode.ExtensionContext) => {
 export const getAuthenticate = () => {
   return authenticateTenant;
 };
+
+export const getCurrentLoginTenant = () => {
+  return authenticateTenant.getCurrentTenant();
+}

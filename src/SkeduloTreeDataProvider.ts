@@ -1,5 +1,8 @@
 // vscode skedulo tree view
+import { Schema } from "inspector";
 import * as vscode from "vscode";
+import { ObjectSchema, getCustomSchemas } from "./Services";
+import { getCurrentLoginTenant } from "./AuthenticateTenant";
 // TODO:
 // Add TreeItem Objects
 //  - collapsibleState: vscode.TreeItemCollapsibleState
@@ -8,7 +11,13 @@ import * as vscode from "vscode";
 // Add TreeItem Features Flag -> Quick check if tenant has feature enabled
 // Add TreeItem Webhooks
 
-const LIST_CHILDREN = ["Objects", "ListView", "Features", "Webhooks"];
+// const LIST_CHILDREN = ["Objects", "ListView", "Features", "Webhooks"];
+enum LIST_CHILDREN {
+  OBJECTS = "Objects",
+  LISTVIEW = "ListView",
+  FEATURES = "Features",
+  WEBHOOKS = "Webhooks",
+}
 
 export class SkeduloTreeDataProvider
   implements vscode.TreeDataProvider<SkeduloTreeItem>
@@ -19,6 +28,7 @@ export class SkeduloTreeDataProvider
   readonly onDidChangeTreeData: vscode.Event<
     SkeduloTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
+  private objectSchema: ObjectSchema[] = [];
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -28,15 +38,24 @@ export class SkeduloTreeDataProvider
     return element;
   }
 
+  async getItemObjectSchema() {
+  }
+
   async getChildren(element?: SkeduloTreeItem | undefined) {
     if (element) {
       return Promise.resolve([]);
     }
 
-    const listTreeItem = LIST_CHILDREN.map(
+    // check if is authenticated
+    const loginTenant = getCurrentLoginTenant();
+    if (!loginTenant) {
+    }
+
+    const listTreeItem = Object.keys(LIST_CHILDREN).map(
       (label) =>
         new SkeduloTreeItem(label, vscode.TreeItemCollapsibleState.Collapsed)
     );
+
     return Promise.resolve(listTreeItem);
   }
 }
