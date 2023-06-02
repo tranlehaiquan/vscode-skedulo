@@ -12,19 +12,21 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "iconThemes": [
-      {
-        "id": "skedulo",
-        "label": "SKedulo",
-        "path": "./media/safari-pinned-tab.svg"
+    "icons": {
+      "skedulo-logo": {
+        "description": "Skedulo icon",
+        "default": {
+          "fontPath": "media/skedulo.woff",
+          "fontCharacter": "\\e900"
+        }
       }
-    ],
+    },
     "viewsContainers": {
       "activitybar": [
         {
           "id": "skedulo",
           "title": "Skedulo",
-          "icon": "media/safari-pinned-tab.svg"
+          "icon": "media/skedulo.svg"
         }
       ]
     },

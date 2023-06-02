@@ -19,12 +19,11 @@ export default class StatusBar {
     const tenant = authenticate.getCurrentTenant();
 
     if (tenant) {
-      this.statusBar.text = `$(server) ${tenant?.name}`;
+      this.statusBar.text = `$(skedulo-logo) ${tenant?.name}`;
       this.statusBar.show();
-      // add command to logout
       this.statusBar.command = AuthenticateTenant.commandLogout;
     } else {
-      this.statusBar.text = `$(server) No tenant selected`;
+      this.statusBar.text = `$(skedulo-logo) None`;
       this.statusBar.command = AuthenticateTenant.commandLogin;
       this.statusBar.show();
     }
