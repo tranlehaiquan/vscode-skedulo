@@ -19,12 +19,6 @@
         "path": "./media/safari-pinned-tab.svg"
       }
     ],
-    "viewsWelcome": [
-      {
-        "view": "skedulo-detail",
-        "contents": "Please login.\n[Login Tenant](command:vscode-skedulo.authenticateTenant)"
-      }
-    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -41,10 +35,6 @@
           "name": "Tenant Detail",
           "icon": "media/dep.svg",
           "contextualTitle": "Tenant Detail"
-        },
-        {
-          "id": "skedulo-tenant",
-          "name": "Tenants"
         }
       ]
     },

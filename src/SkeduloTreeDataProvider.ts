@@ -1,8 +1,15 @@
 // vscode skedulo tree view
 import * as vscode from "vscode";
-import TenantManager from "./TenantManager";
+// TODO:
+// Add TreeItem Objects
+//  - collapsibleState: vscode.TreeItemCollapsibleState
+//  - contextValue: string
+// Add TreeItem ListView
+// Add TreeItem Features Flag -> Quick check if tenant has feature enabled
+// Add TreeItem Webhooks
 
-// a hello the world view
+const LIST_CHILDREN = ["Objects", "ListView", "Features", "Webhooks"];
+
 export class SkeduloTreeDataProvider
   implements vscode.TreeDataProvider<SkeduloTreeItem>
 {
@@ -21,18 +28,16 @@ export class SkeduloTreeDataProvider
     return element;
   }
 
-  getChildren(
-    element?: SkeduloTreeItem | undefined
-  ): vscode.ProviderResult<SkeduloTreeItem[]> {
-    const tenant = TenantManager.getCurrentTenant();
-
-    if (tenant) {
-      return Promise.resolve([
-        new SkeduloTreeItem(tenant.name, vscode.TreeItemCollapsibleState.None),
-      ]);
+  async getChildren(element?: SkeduloTreeItem | undefined) {
+    if (element) {
+      return Promise.resolve([]);
     }
 
-    return Promise.resolve([]);
+    const listTreeItem = LIST_CHILDREN.map(
+      (label) =>
+        new SkeduloTreeItem(label, vscode.TreeItemCollapsibleState.Collapsed)
+    );
+    return Promise.resolve(listTreeItem);
   }
 }
 

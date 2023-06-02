@@ -3,10 +3,20 @@ import TenantManager from "./TenantManager";
 import Auth0Utils from "./core/auth0-utils";
 import { Environment, SkedError } from "./core/types";
 
+type TenantInfo = {
+  name: string;
+  accessToken: string;
+};
+
 export class AuthenticateTenant {
+  // current tenant
+  private currentTenant: TenantInfo | undefined;
+  static commandLogin = "vscode-skedulo.authenticateTenant";
+  static commandLogout = "vscode-skedulo.logoutTenant";
+
   constructor(context: vscode.ExtensionContext) {
-    let authenticateCommand = vscode.commands.registerCommand(
-      "vscode-skedulo.authenticateTenant",
+    const authenticateCommand = vscode.commands.registerCommand(
+      AuthenticateTenant.commandLogin,
       async () => {
         // vscode open input tenant name
         const tenant = await vscode.window.showInputBox({
@@ -38,21 +48,54 @@ export class AuthenticateTenant {
       }
     );
 
+    const logoutCommand = vscode.commands.registerCommand(
+      AuthenticateTenant.commandLogout,
+      async () => {
+        this.logoutTenant();
+        vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
+      }
+    );
+
     context.subscriptions.push(authenticateCommand);
+    context.subscriptions.push(logoutCommand);
   }
 
-  authenticateTenant = async (tenant: string) => {
+  async authenticateTenant(tenant: string) {
     const auth0 = new Auth0Utils();
     const accessToken = await auth0.performAuth0Login(
       tenant,
       Environment.Production
     );
 
-    TenantManager.setCurrentTenant({
+    this.currentTenant = {
       name: tenant,
       accessToken,
-    });
+    };
 
     return accessToken;
-  };
+  }
+
+  getCurrentTenant() {
+    return this.currentTenant;
+  }
+
+  logoutTenant() {
+    this.currentTenant = undefined;
+    vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
+    // show message logout success
+    vscode.window.showInformationMessage("Successfully logout tenant");
+  }
 }
+
+let authenticateTenant: AuthenticateTenant;
+
+export const initAuthenticate = (context: vscode.ExtensionContext) => {
+  if (!authenticateTenant) {
+    authenticateTenant = new AuthenticateTenant(context);
+  }
+  return authenticateTenant;
+};
+
+export const getAuthenticate = () => {
+  return authenticateTenant;
+};
