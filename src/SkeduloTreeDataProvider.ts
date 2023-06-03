@@ -1,7 +1,11 @@
 // vscode skedulo tree view
 import { Schema } from "inspector";
 import * as vscode from "vscode";
-import { ObjectSchema, getCustomSchemas } from "./Services";
+import {
+  CustomObjectSchema,
+  getCustomSchemas,
+  getBaseSchemas,
+} from "./Services";
 import { getCurrentLoginTenant } from "./AuthenticateTenant";
 // TODO:
 // Add TreeItem Objects
@@ -11,8 +15,8 @@ import { getCurrentLoginTenant } from "./AuthenticateTenant";
 // Add TreeItem Features Flag -> Quick check if tenant has feature enabled
 // Add TreeItem Webhooks
 
-// const LIST_CHILDREN = ["Objects", "ListView", "Features", "Webhooks"];
-enum LIST_CHILDREN {
+// const ListChildren = ["Objects", "ListView", "Features", "Webhooks"];
+enum ListChildren {
   OBJECTS = "Objects",
   LISTVIEW = "ListView",
   FEATURES = "Features",
@@ -28,7 +32,7 @@ export class SkeduloTreeDataProvider
   readonly onDidChangeTreeData: vscode.Event<
     SkeduloTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
-  private objectSchema: ObjectSchema[] = [];
+  private objectSchema: CustomObjectSchema[] = [];
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -39,19 +43,39 @@ export class SkeduloTreeDataProvider
   }
 
   async getItemObjectSchema() {
+    const loginTenant = getCurrentLoginTenant();
+    if (!loginTenant) {
+      return [];
+    }
+    const customSchemas = await getCustomSchemas();
+    const baseSchemas = await getBaseSchemas();
+
+    const customObjectSchema = customSchemas.result.map(
+      (schema) =>
+        new SkeduloTreeItem(schema.name, vscode.TreeItemCollapsibleState.None)
+    );
+
+    const baseObjectSchema = baseSchemas.result.map(
+      (schema) =>
+        new SkeduloTreeItem(schema.name, vscode.TreeItemCollapsibleState.None)
+    );
+
+    return [...customObjectSchema, ...baseObjectSchema];
   }
 
   async getChildren(element?: SkeduloTreeItem | undefined) {
-    if (element) {
-      return Promise.resolve([]);
-    }
-
     // check if is authenticated
     const loginTenant = getCurrentLoginTenant();
-    if (!loginTenant) {
+    if (
+      loginTenant &&
+      element?.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed
+    ) {
+      if (element.label === ListChildren["OBJECTS"]) {
+        return await this.getItemObjectSchema();
+      }
     }
 
-    const listTreeItem = Object.keys(LIST_CHILDREN).map(
+    const listTreeItem = Object.values(ListChildren).map(
       (label) =>
         new SkeduloTreeItem(label, vscode.TreeItemCollapsibleState.Collapsed)
     );

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import TenantManager from "./TenantManager";
 import Auth0Utils from "./core/auth0-utils";
 import { Environment, SkedError } from "./core/types";
+import { setAuthenticate } from "./Services";
 
 type TenantInfo = {
   name: string;
@@ -72,6 +72,7 @@ export class AuthenticateTenant {
       accessToken,
     };
 
+    setAuthenticate(accessToken);
     return accessToken;
   }
 
@@ -102,4 +103,4 @@ export const getAuthenticate = () => {
 
 export const getCurrentLoginTenant = () => {
   return authenticateTenant.getCurrentTenant();
-}
+};
