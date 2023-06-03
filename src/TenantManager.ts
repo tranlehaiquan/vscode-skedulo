@@ -21,6 +21,4 @@ export class TenantManager {
   }
 }
 
-const tenantManager = new TenantManager();
-
-export default tenantManager;
+export default TenantManager;

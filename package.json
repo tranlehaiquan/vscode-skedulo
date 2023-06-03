@@ -44,14 +44,47 @@
       {
         "command": "skedulo.skedulo-detail:refresh",
         "category": "Skedulo",
-        "title": "Refresh Tenant Detail"
+        "title": "Refresh",
+        "icon": "$(extensions-refresh)"
       },
       {
         "command": "skedulo.showStatus",
         "category": "Skedulo",
         "title": "show status"
+      },
+      {
+        "command": "skedulo.pullObject",
+        "category": "Skedulo",
+        "title": "Pull object",
+        "icon": "$(extensions-install-count)"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "skedulo.skedulo-detail:refresh",
+          "when": "view == skedulo-detail",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "skedulo.skedulo-detail:refresh",
+          "when": "view == skedulo-detail && viewItem == object",
+          "group": "inline"
+        },
+        {
+          "command": "skedulo.skedulo-detail:refresh",
+          "when": "view == skedulo-detail && viewItem == object",
+          "group": "inline"
+        },
+        {
+          "command": "skedulo.pullObject",
+          "when": "view == skedulo-detail && viewItem == object",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",

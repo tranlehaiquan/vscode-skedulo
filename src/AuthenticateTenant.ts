@@ -2,11 +2,15 @@ import * as vscode from "vscode";
 import Auth0Utils from "./core/auth0-utils";
 import { Environment, SkedError } from "./core/types";
 import { setAuthenticate } from "./Services";
+import { TenantManager } from "./TenantManager";
 
 type TenantInfo = {
   name: string;
   accessToken: string;
 };
+
+// key store in workspaceState
+const KEY_AUTHENTICATE = "vscode-skedulo-authenticate";
 
 export class AuthenticateTenant {
   // current tenant
@@ -26,7 +30,7 @@ export class AuthenticateTenant {
 
         if (tenant) {
           try {
-            await this.authenticateTenant(tenant);
+            await this.loginTenant(tenant);
             vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
             // show message success login
             vscode.window.showInformationMessage(
@@ -58,9 +62,20 @@ export class AuthenticateTenant {
 
     context.subscriptions.push(authenticateCommand);
     context.subscriptions.push(logoutCommand);
+    this.loadAuthenticateFromWorkspaceState();
   }
 
-  async authenticateTenant(tenant: string) {
+  loadAuthenticateFromWorkspaceState() {
+    const authenticate =
+    TenantManager?.workspaceState.get<TenantInfo>(KEY_AUTHENTICATE);
+
+    if (authenticate) {
+      this.currentTenant = authenticate;
+    setAuthenticate(authenticate.accessToken);
+    }
+  }
+
+  async loginTenant(tenant: string) {
     const auth0 = new Auth0Utils();
     const accessToken = await auth0.performAuth0Login(
       tenant,
@@ -72,6 +87,8 @@ export class AuthenticateTenant {
       accessToken,
     };
 
+    // save to workspaceState
+    TenantManager?.workspaceState.update(KEY_AUTHENTICATE, this.currentTenant);
     setAuthenticate(accessToken);
     return accessToken;
   }
@@ -85,6 +102,9 @@ export class AuthenticateTenant {
     vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
     // show message logout success
     vscode.window.showInformationMessage("Successfully logout tenant");
+
+    // remove from workspaceState
+    TenantManager?.workspaceState.update(KEY_AUTHENTICATE, undefined);
   }
 }
 

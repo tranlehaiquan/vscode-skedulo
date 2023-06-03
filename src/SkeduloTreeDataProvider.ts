@@ -5,6 +5,7 @@ import {
   CustomObjectSchema,
   getCustomSchemas,
   getBaseSchemas,
+  BaseObjectSchema,
 } from "./Services";
 import { getCurrentLoginTenant } from "./AuthenticateTenant";
 // TODO:
@@ -32,14 +33,10 @@ export class SkeduloTreeDataProvider
   readonly onDidChangeTreeData: vscode.Event<
     SkeduloTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
-  private objectSchema: CustomObjectSchema[] = [];
+  private objectSchema: (CustomObjectSchema | BaseObjectSchema)[] = [];
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
-  }
-
-  getTreeItem(element: SkeduloTreeItem): vscode.TreeItem {
-    return element;
   }
 
   async getItemObjectSchema() {
@@ -47,23 +44,47 @@ export class SkeduloTreeDataProvider
     if (!loginTenant) {
       return [];
     }
-    const customSchemas = await getCustomSchemas();
-    const baseSchemas = await getBaseSchemas();
+    const [customSchemas, baseSchemas] = await Promise.all([
+      getCustomSchemas(),
+      getBaseSchemas(),
+    ]);
 
     const customObjectSchema = customSchemas.result.map(
       (schema) =>
         new SkeduloTreeItem(schema.name, vscode.TreeItemCollapsibleState.None)
     );
 
-    const baseObjectSchema = baseSchemas.result.map(
-      (schema) =>
-        new SkeduloTreeItem(schema.name, vscode.TreeItemCollapsibleState.None)
-    );
+    const baseObjectSchema = baseSchemas.result.map((schema) => {
+      const a = new SkeduloTreeItem(
+        schema.name,
+        vscode.TreeItemCollapsibleState.None
+      );
+      a.iconPath = new vscode.ThemeIcon("skedulo-logo");
 
-    return [...customObjectSchema, ...baseObjectSchema];
+      return a;
+    });
+
+    return [...baseObjectSchema, ...customObjectSchema].map((i) => {
+      i.contextValue = "object";
+      return i;
+    });
+  }
+
+  getTreeItem(element: SkeduloTreeItem): vscode.TreeItem {
+    return element;
   }
 
   async getChildren(element?: SkeduloTreeItem | undefined) {
+    // if root
+    if (!element) {
+      const listTreeItem = Object.values(ListChildren).map(
+        (label) =>
+          new SkeduloTreeItem(label, vscode.TreeItemCollapsibleState.Collapsed)
+      );
+
+      return Promise.resolve(listTreeItem);
+    }
+
     // check if is authenticated
     const loginTenant = getCurrentLoginTenant();
     if (
@@ -75,12 +96,8 @@ export class SkeduloTreeDataProvider
       }
     }
 
-    const listTreeItem = Object.values(ListChildren).map(
-      (label) =>
-        new SkeduloTreeItem(label, vscode.TreeItemCollapsibleState.Collapsed)
-    );
-
-    return Promise.resolve(listTreeItem);
+    // for the rest
+    return Promise.resolve([]);
   }
 }
 
