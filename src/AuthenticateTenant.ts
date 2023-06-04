@@ -11,7 +11,7 @@ type TenantInfo = {
 };
 
 // key store in workspaceState
-const KEY_AUTHENTICATE = "vscode-skedulo-authenticate";
+const KEY_AUTHENTICATED = "skeduloAuthenticate";
 
 export class AuthenticateTenant {
   // current tenant
@@ -64,7 +64,7 @@ export class AuthenticateTenant {
 
   loadAuthenticateFromWorkspaceState() {
     const authenticate =
-      TenantManager?.workspaceState.get<TenantInfo>(KEY_AUTHENTICATE);
+      TenantManager?.workspaceState.get<TenantInfo>(KEY_AUTHENTICATED);
 
     if (authenticate) {
       this.currentTenant = authenticate;
@@ -85,7 +85,7 @@ export class AuthenticateTenant {
     };
 
     // save to workspaceState
-    TenantManager?.workspaceState.update(KEY_AUTHENTICATE, this.currentTenant);
+    TenantManager?.workspaceState.update(KEY_AUTHENTICATED, this.currentTenant);
     TenantManager.addTenantToGlobalState({ ...this.currentTenant });
     setAuthenticate(accessToken);
     return accessToken;
@@ -96,13 +96,14 @@ export class AuthenticateTenant {
   }
 
   logoutTenant() {
+    console.log(TenantManager?.workspaceState.get(KEY_AUTHENTICATED));
+    // remove from workspaceState
+    TenantManager?.workspaceState.update(KEY_AUTHENTICATED, undefined);
     this.currentTenant = undefined;
+
     vscode.commands.executeCommand(COMMANDS.REFRESH_EXTENSION);
     // show message logout success
     vscode.window.showInformationMessage("Successfully logout tenant");
-
-    // remove from workspaceState
-    TenantManager?.workspaceState.update(KEY_AUTHENTICATE, undefined);
   }
 }
 

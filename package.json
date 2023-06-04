@@ -56,6 +56,18 @@
         "category": "Skedulo",
         "title": "Pull object",
         "icon": "$(extensions-install-count)"
+      },
+      {
+        "command": "skedulo.login",
+        "category": "Skedulo",
+        "title": "Login tenant",
+        "icon": "$(ports-open-browser-icon)"
+      },
+      {
+        "command": "skedulo.logout",
+        "category": "Skedulo",
+        "title": "Logout tenant",
+        "icon": "$(ports-open-browser-icon)"
       }
     ],
     "menus": {
