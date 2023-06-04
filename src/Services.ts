@@ -46,4 +46,21 @@ export const getBaseSchemas = async (): Promise<{
   return res.data;
 };
 
+// get all schema
+export const getAllSchemas = async (): Promise<
+  (BaseObjectSchema | CustomObjectSchema)[]
+> => {
+  // check if instance.defaults.headers.common["Authorization"] is set
+  if (!instance.defaults.headers.common["Authorization"]) {
+    throw new Error("Not authenticated");
+  }
+  // if not set, throw error
+  const base = getBaseSchemas();
+  const custom = getCustomSchemas();
+
+  const [baseRes, customRes] = await Promise.all([base, custom]);
+  const result = [...baseRes.result, ...customRes.result];
+  return result;
+};
+
 export default instance;

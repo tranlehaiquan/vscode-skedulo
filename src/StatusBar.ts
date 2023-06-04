@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { AuthenticateTenant, getAuthenticate } from "./AuthenticateTenant";
+import { COMMANDS } from "./commands";
 
 export default class StatusBar {
   // private statusBar
@@ -20,12 +21,11 @@ export default class StatusBar {
 
     if (tenant) {
       this.statusBar.text = `$(skedulo-logo) ${tenant?.name}`;
-      this.statusBar.show();
-      this.statusBar.command = AuthenticateTenant.commandLogout;
+      this.statusBar.command = COMMANDS.LOGOUT;
     } else {
       this.statusBar.text = `$(skedulo-logo) None`;
-      this.statusBar.command = AuthenticateTenant.commandLogin;
-      this.statusBar.show();
+      this.statusBar.command = COMMANDS.LOGIN;
     }
+    this.statusBar.show();
   }
 }

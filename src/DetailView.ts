@@ -1,13 +1,5 @@
 // vscode skedulo tree view
-import { Schema } from "inspector";
 import * as vscode from "vscode";
-import {
-  CustomObjectSchema,
-  getCustomSchemas,
-  getBaseSchemas,
-  BaseObjectSchema,
-} from "./Services";
-import { getCurrentLoginTenant } from "./AuthenticateTenant";
 // TODO:
 // Add TreeItem Objects
 //  - collapsibleState: vscode.TreeItemCollapsibleState
@@ -18,7 +10,7 @@ import { getCurrentLoginTenant } from "./AuthenticateTenant";
 
 // const ListChildren = ["Objects", "ListView", "Features", "Webhooks"];
 enum ListChildren {
-  OBJECTS = "Objects",
+  // OBJECTS = "Objects",
   LISTVIEW = "ListView",
   FEATURES = "Features",
   WEBHOOKS = "Webhooks",
@@ -33,41 +25,9 @@ export class SkeduloTreeDataProvider
   readonly onDidChangeTreeData: vscode.Event<
     SkeduloTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
-  private objectSchema: (CustomObjectSchema | BaseObjectSchema)[] = [];
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
-  }
-
-  async getItemObjectSchema() {
-    const loginTenant = getCurrentLoginTenant();
-    if (!loginTenant) {
-      return [];
-    }
-    const [customSchemas, baseSchemas] = await Promise.all([
-      getCustomSchemas(),
-      getBaseSchemas(),
-    ]);
-
-    const customObjectSchema = customSchemas.result.map(
-      (schema) =>
-        new SkeduloTreeItem(schema.name, vscode.TreeItemCollapsibleState.None)
-    );
-
-    const baseObjectSchema = baseSchemas.result.map((schema) => {
-      const a = new SkeduloTreeItem(
-        schema.name,
-        vscode.TreeItemCollapsibleState.None
-      );
-      a.iconPath = new vscode.ThemeIcon("skedulo-logo");
-
-      return a;
-    });
-
-    return [...baseObjectSchema, ...customObjectSchema].map((i) => {
-      i.contextValue = "object";
-      return i;
-    });
   }
 
   getTreeItem(element: SkeduloTreeItem): vscode.TreeItem {
@@ -85,18 +45,6 @@ export class SkeduloTreeDataProvider
       return Promise.resolve(listTreeItem);
     }
 
-    // check if is authenticated
-    const loginTenant = getCurrentLoginTenant();
-    if (
-      loginTenant &&
-      element?.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed
-    ) {
-      if (element.label === ListChildren["OBJECTS"]) {
-        return await this.getItemObjectSchema();
-      }
-    }
-
-    // for the rest
     return Promise.resolve([]);
   }
 }

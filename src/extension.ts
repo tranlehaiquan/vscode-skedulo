@@ -1,8 +1,10 @@
 import * as vscode from "vscode";
-import { SkeduloTreeDataProvider } from "./SkeduloTreeDataProvider";
+import { SkeduloTreeDataProvider } from "./DetailView";
 import { initAuthenticate } from "./AuthenticateTenant";
 import { TenantManager } from "./TenantManager";
 import StatusBar from "./StatusBar";
+import ObjectView from "./ObjectView";
+import { COMMANDS } from "./commands";
 
 export function activate(context: vscode.ExtensionContext) {
   TenantManager.workspaceState = context.workspaceState;
@@ -12,8 +14,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   const skeduloProvider = new SkeduloTreeDataProvider();
   vscode.window.registerTreeDataProvider("skedulo-detail", skeduloProvider);
-  vscode.commands.registerCommand("skedulo.skedulo-detail:refresh", () => {
+
+  const objectsView = new ObjectView(context);
+  vscode.window.registerTreeDataProvider("skedulo-objects", objectsView);
+
+  vscode.commands.registerCommand(COMMANDS.REFRESH_EXTENSION, () => {
     skeduloProvider.refresh();
+    objectsView.refresh();
     statusBar.doUpdate();
   });
 }

@@ -35,25 +35,24 @@
         {
           "id": "skedulo-detail",
           "name": "Tenant Detail",
-          "icon": "media/dep.svg",
-          "contextualTitle": "Tenant Detail"
+          "icon": "media/dep.svg"
+        },
+        {
+          "id": "skedulo-objects",
+          "name": "Objects",
+          "icon": "media/skedulo.svg"
         }
       ]
     },
     "commands": [
       {
-        "command": "skedulo.skedulo-detail:refresh",
+        "command": "skedulo.refresh",
         "category": "Skedulo",
         "title": "Refresh",
         "icon": "$(extensions-refresh)"
       },
       {
-        "command": "skedulo.showStatus",
-        "category": "Skedulo",
-        "title": "show status"
-      },
-      {
-        "command": "skedulo.pullObject",
+        "command": "skedulo.pullObjects",
         "category": "Skedulo",
         "title": "Pull object",
         "icon": "$(extensions-install-count)"
@@ -62,24 +61,29 @@
     "menus": {
       "view/title": [
         {
-          "command": "skedulo.skedulo-detail:refresh",
+          "command": "skedulo.refresh",
           "when": "view == skedulo-detail",
+          "group": "navigation"
+        },
+        {
+          "command": "skedulo.refresh",
+          "when": "view == skedulo-objects",
+          "group": "navigation"
+        },
+        {
+          "command": "skedulo.pullObjects",
+          "when": "view == skedulo-objects",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "skedulo.skedulo-detail:refresh",
+          "command": "skedulo.refresh",
           "when": "view == skedulo-detail && viewItem == object",
           "group": "inline"
         },
         {
-          "command": "skedulo.skedulo-detail:refresh",
-          "when": "view == skedulo-detail && viewItem == object",
-          "group": "inline"
-        },
-        {
-          "command": "skedulo.pullObject",
+          "command": "skedulo.refresh",
           "when": "view == skedulo-detail && viewItem == object",
           "group": "inline"
         }
@@ -92,7 +96,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -109,9 +114,12 @@
   },
   "dependencies": {
     "@types/express": "^4.17.17",
+    "@types/fs-extra": "^11.0.1",
     "@types/lodash": "^4.14.195",
     "axios": "^1.4.0",
     "express": "^4.18.2",
-    "lodash": "^4.17.21"
+    "fs-extra": "^11.1.1",
+    "lodash": "^4.17.21",
+    "prettier": "^2.8.8"
   }
 }

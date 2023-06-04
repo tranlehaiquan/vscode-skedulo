@@ -3,6 +3,7 @@ import Auth0Utils from "./core/auth0-utils";
 import { Environment, SkedError } from "./core/types";
 import { setAuthenticate } from "./Services";
 import { TenantManager } from "./TenantManager";
+import { COMMANDS } from "./commands";
 
 type TenantInfo = {
   name: string;
@@ -15,12 +16,10 @@ const KEY_AUTHENTICATE = "vscode-skedulo-authenticate";
 export class AuthenticateTenant {
   // current tenant
   private currentTenant: TenantInfo | undefined;
-  static commandLogin = "vscode-skedulo.authenticateTenant";
-  static commandLogout = "vscode-skedulo.logoutTenant";
 
   constructor(context: vscode.ExtensionContext) {
     const authenticateCommand = vscode.commands.registerCommand(
-      AuthenticateTenant.commandLogin,
+      COMMANDS.LOGIN,
       async () => {
         // vscode open input tenant name
         const tenant = await vscode.window.showInputBox({
@@ -31,7 +30,7 @@ export class AuthenticateTenant {
         if (tenant) {
           try {
             await this.loginTenant(tenant);
-            vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
+            vscode.commands.executeCommand(COMMANDS.REFRESH_EXTENSION);
             // show message success login
             vscode.window.showInformationMessage(
               "Successfully authenticated tenant: " + tenant
@@ -53,10 +52,10 @@ export class AuthenticateTenant {
     );
 
     const logoutCommand = vscode.commands.registerCommand(
-      AuthenticateTenant.commandLogout,
+      COMMANDS.LOGOUT,
       async () => {
         this.logoutTenant();
-        vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
+        vscode.commands.executeCommand(COMMANDS.REFRESH_EXTENSION);
       }
     );
 
@@ -67,11 +66,11 @@ export class AuthenticateTenant {
 
   loadAuthenticateFromWorkspaceState() {
     const authenticate =
-    TenantManager?.workspaceState.get<TenantInfo>(KEY_AUTHENTICATE);
+      TenantManager?.workspaceState.get<TenantInfo>(KEY_AUTHENTICATE);
 
     if (authenticate) {
       this.currentTenant = authenticate;
-    setAuthenticate(authenticate.accessToken);
+      setAuthenticate(authenticate.accessToken);
     }
   }
 
@@ -99,7 +98,7 @@ export class AuthenticateTenant {
 
   logoutTenant() {
     this.currentTenant = undefined;
-    vscode.commands.executeCommand("skedulo.skedulo-detail:refresh");
+    vscode.commands.executeCommand(COMMANDS.REFRESH_EXTENSION);
     // show message logout success
     vscode.window.showInformationMessage("Successfully logout tenant");
 
