@@ -22,14 +22,12 @@ export class AuthenticateTenant {
       COMMANDS.LOGIN,
       async () => {
         // vscode open input tenant name
-        const tenant = await vscode.window.showInputBox({
-          prompt: "Enter tenant name",
-          placeHolder: "trainingcxvn",
-        });
+        const tenant = await TenantManager.showQuickPickTenants();
 
         if (tenant) {
           try {
             await this.loginTenant(tenant);
+
             vscode.commands.executeCommand(COMMANDS.REFRESH_EXTENSION);
             // show message success login
             vscode.window.showInformationMessage(
@@ -88,6 +86,7 @@ export class AuthenticateTenant {
 
     // save to workspaceState
     TenantManager?.workspaceState.update(KEY_AUTHENTICATE, this.currentTenant);
+    TenantManager.addTenantToGlobalState({ ...this.currentTenant });
     setAuthenticate(accessToken);
     return accessToken;
   }
