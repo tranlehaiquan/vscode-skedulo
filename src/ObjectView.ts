@@ -40,19 +40,30 @@ class ObjectView implements vscode.TreeDataProvider<any> {
     );
   }
 
+  // pull all objects and fields file from server
   async pullObjectsFile() {
-    // pull all object file from server
-    const objects = await getAllSchemas();
+    // create skedulo/objects folder
+    debugger;
+
     const workspacePath =
       vscode.workspace.workspaceFolders?.[0].uri.fsPath || "";
 
-    // write to file object.json
-    const result = await fs.writeFile(
-      path.resolve(workspacePath, "objects.json"),
-      JSON.stringify(objects, null, 2)
-    );
+    const objectFolder = path.resolve(workspacePath, "skedulo/objects");
+    await fs.mkdir(objectFolder, {
+      recursive: true,
+    });
 
-    return result;
+    const objects = await getAllSchemas();
+
+    return await Promise.all(
+      objects.map(async (object) => {
+        const objectPath = path.resolve(objectFolder, object.name);
+        await fs.mkdir(objectPath);
+        // also create folder fields
+        const fieldsPath = path.resolve(objectPath, "fields");
+        await fs.mkdir(fieldsPath);
+      })
+    );
   }
 
   refresh(): void {
