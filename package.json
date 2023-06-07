@@ -54,7 +54,7 @@
       {
         "command": "skedulo.pullObjects",
         "category": "Skedulo",
-        "title": "Pull object",
+        "title": "Pull Objects and custom fields",
         "icon": "$(extensions-install-count)"
       },
       {
@@ -79,11 +79,6 @@
         },
         {
           "command": "skedulo.refresh",
-          "when": "view == skedulo-objects",
-          "group": "navigation"
-        },
-        {
-          "command": "skedulo.pullObjects",
           "when": "view == skedulo-objects",
           "group": "navigation"
         }

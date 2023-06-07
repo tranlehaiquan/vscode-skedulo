@@ -2,7 +2,9 @@
 import * as vscode from "vscode";
 import {
   BaseObjectSchema,
+  CustomField,
   CustomObjectSchema,
+  getAllFields,
   getAllSchemas,
 } from "./Services";
 import { getCurrentLoginTenant } from "./AuthenticateTenant";
@@ -43,8 +45,6 @@ class ObjectView implements vscode.TreeDataProvider<any> {
   // pull all objects and fields file from server
   async pullObjectsFile() {
     // create skedulo/objects folder
-    debugger;
-
     const workspacePath =
       vscode.workspace.workspaceFolders?.[0].uri.fsPath || "";
 
@@ -53,15 +53,50 @@ class ObjectView implements vscode.TreeDataProvider<any> {
       recursive: true,
     });
 
-    const objects = await getAllSchemas();
+    const [objects, customFields] = await Promise.all([
+      getAllSchemas(),
+      getAllFields(),
+    ]);
+
+    // group customFields by schemaName
+    const customFieldsGroupBySchemaName = customFields.reduce<
+      Record<string, CustomField[]>
+    >((pre, curr) => {
+      const { schemaName } = curr;
+
+      if (!pre[schemaName]) {
+        pre[schemaName] = [curr];
+      } else {
+        pre[schemaName].push(curr);
+      }
+      return pre;
+    }, {});
 
     return await Promise.all(
       objects.map(async (object) => {
         const objectPath = path.resolve(objectFolder, object.name);
-        await fs.mkdir(objectPath);
-        // also create folder fields
         const fieldsPath = path.resolve(objectPath, "fields");
-        await fs.mkdir(fieldsPath);
+
+        await fs.mkdirs(fieldsPath);
+        await fs.writeJson(path.resolve(objectPath, "object.json"), object, {
+          spaces: 2,
+        });
+
+        // get custom fields
+        const customFields = customFieldsGroupBySchemaName[object.name] || [];
+        await Promise.all(
+          customFields.map(async (field) => {
+            const { name } = field;
+            // create field file fields/[name].json
+            await fs.writeJson(
+              path.resolve(fieldsPath, `${name}.json`),
+              field,
+              {
+                spaces: 2,
+              }
+            );
+          })
+        );
       })
     );
   }

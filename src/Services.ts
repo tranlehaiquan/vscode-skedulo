@@ -63,4 +63,36 @@ export const getAllSchemas = async (): Promise<
   return result;
 };
 
+export type CustomField = {
+  id: string;
+  name: string;
+  schemaName: string;
+  label: string;
+  description: string | null;
+  fieldType: string;
+  mapping: string;
+  referenceSchemaName: string | null;
+  referenceSchemaFieldName: string | null;
+  required: boolean;
+  upsertKey: boolean;
+  accessMode: string;
+  readOnly: boolean;
+  maxLength: number | null;
+  precision: number | null;
+  scale: number | null;
+  isAlert: boolean;
+  showIf: string | null;
+  showDesktop: boolean;
+  showMobile: boolean;
+  editableOnMobile: boolean;
+  requiredOnMobile: boolean;
+  displayOrder: number | null;
+};
+
+// get fields
+export const getAllFields = async (): Promise<CustomField[]> => {
+  const res = await instance.get(`/custom/fields?legacyAlertPrefix=false`);
+  return res.data.result;
+};
+
 export default instance;
